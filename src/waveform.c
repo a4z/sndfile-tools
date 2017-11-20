@@ -33,7 +33,10 @@
 
 #include "common.h"
 
+#if HAVE_CONFIG_H
 #include "config.h"
+#endif
+
 
 #define	MIN_WIDTH		(120)
 #define	MIN_HEIGHT		(32)
