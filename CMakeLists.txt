@@ -2,13 +2,14 @@ cmake_minimum_required(VERSION 3.0)
 
 project(sndfile-tools C)
 
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(SNDFILE REQUIRED sndfile)
 pkg_check_modules(FFTW3 REQUIRED fftw3)
 pkg_check_modules(SAMPLERATE REQUIRED samplerate)
 pkg_check_modules(CAIRO REQUIRED cairo)
-
+pkg_check_modules(JACK jack)
 
 
 add_executable(sndfile-generate-chirp
@@ -86,9 +87,28 @@ target_link_libraries(sndfile_resample
 
 
 
+pkg_check_modules(JACK jack)
 
 
-# TODO
+if (${JACK_FOUND})
+
+  add_executable(
+    sndfile-jackplay
+    src/jackplay.c
+  )
+
+  target_include_directories(sndfile-jackplay PRIVATE
+    ${SNDFILE_INCLUDE_DIRS}
+    ${JACK_INCLUDE_DIRS})
+
+
+  target_link_libraries(sndfile-jackplay
+    ${SNDFILE_LIBRARIES}
+    ${JACK_LIBRARIES}
+    m)
+
+endif(${JACK_FOUND})
+  # TODO
 #if HAVE_JACK
 #bin_PROGRAMS += bin/sndfile-jackplay
 #bin_sndfile_jackplay_SOURCES = src/jackplay.c
